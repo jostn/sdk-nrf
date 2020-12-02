@@ -22,6 +22,8 @@ manifest:
     # NCS repositories are hosted here.
     - name: ncs
       url-base: https://github.com/nrfconnect
+    - name: jostn
+      url-base: https://github.com/jostn
     # Third-party repository sources:
     - name: zephyrproject
       url-base: https://github.com/zephyrproject-rtos
@@ -50,7 +52,8 @@ manifest:
     # https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/zephyr/guides/modules.html
     - name: zephyr
       repo-path: sdk-zephyr
-      revision: 3366927a54986ad0ddf060d0e08ecc578adf11f0
+      remote: jostn
+      revision: f5d30bde5ee40aaea5fbb6827b53f9a0161144d5
       import:
         # In addition to the zephyr repository itself, NCS also
         # imports the contents of zephyr/west.yml at the above
