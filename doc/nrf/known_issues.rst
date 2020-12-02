@@ -153,6 +153,14 @@ nRF5340
 FOTA does not work
   FOTA with the :ref:`zephyr:smp_svr_sample` does not work.
 
+.. rst-class:: v1-4-99-dev1
+
+NCSDK-7280: Excessive clock drift for LFXO on certain boards.
+  **Workaround** Modify :file:`ncs/zephyr/soc/arm/nordic_nrf/nrf53/soc.c`::
+
+  Change NRF_OSCILLATORS_LFXO_CAP_6PF to NRF_OSCILLATORS_LFXO_CAP_11PF.
+
+
 nRF52820
 ========
 
