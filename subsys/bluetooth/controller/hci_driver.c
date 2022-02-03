@@ -407,11 +407,11 @@ void hci_driver_receive_process(void)
 {
 	static uint8_t hci_buf[BT_BUF_RX_SIZE];
 
-	static uint8_t hci_buf[BT_BUF_RX_SIZE];
+	// static uint8_t hci_buf[BT_BUF_RX_SIZE];
 
 	bool received_evt = false;
 	bool received_data = false;
-	bool received_evt;
+	// bool received_evt;
 
 	received_evt = fetch_and_process_hci_evt(&hci_buf[0]);
 
