@@ -24,6 +24,7 @@
 #include <sdc_hci_vs.h>
 #include "multithreading_lock.h"
 #include "hci_internal.h"
+#include "ecdh.h"
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_HCI_DRIVER)
 #define LOG_MODULE_NAME sdc_hci_driver
@@ -401,18 +402,8 @@ static bool fetch_and_process_acl_data(uint8_t *p_hci_buffer)
 
 static void recv_thread(void *p1, void *p2, void *p3)
 {
-	ARG_UNUSED(p1);
-	ARG_UNUSED(p2);
-	ARG_UNUSED(p3);
+	static uint8_t hci_buf[BT_BUF_RX_SIZE];
 
-#if defined(CONFIG_BT_BUF_EVT_DISCARDABLE_COUNT)
-	static uint8_t hci_buffer[MAX(BT_BUF_RX_SIZE,
-				      BT_BUF_EVT_SIZE(CONFIG_BT_BUF_EVT_DISCARDABLE_SIZE))];
-#else
-	static uint8_t hci_buffer[BT_BUF_RX_SIZE];
-#endif
-
-	bool received_evt = false;
 	bool received_data = false;
 
 	while (true) {
@@ -696,11 +687,9 @@ static int hci_driver_open(void)
 {
 	BT_DBG("Open");
 
-	k_thread_create(&recv_thread_data, recv_thread_stack,
-			K_THREAD_STACK_SIZEOF(recv_thread_stack), recv_thread,
-			NULL, NULL, NULL, K_PRIO_COOP(CONFIG_BT_CTLR_SDC_RX_PRIO), 0,
-			K_NO_WAIT);
-	k_thread_name_set(&recv_thread_data, "SDC RX");
+	if (IS_ENABLED(CONFIG_BT_CTLR_ECDH)) {
+		hci_ecdh_init();
+	}
 
 	uint8_t build_revision[SDC_BUILD_REVISION_SIZE];
 
@@ -737,6 +726,8 @@ static int hci_driver_open(void)
 		BT_ERR("Failed to register rand source (%d)", err);
 		return -EINVAL;
 	}
+
+	k_work_init(&receive_work, receive_work_handler);
 
 	err = MULTITHREADING_LOCK_ACQUIRE();
 	if (!err) {
