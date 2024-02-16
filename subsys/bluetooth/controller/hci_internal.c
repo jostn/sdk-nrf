@@ -1612,6 +1612,11 @@ static uint8_t vs_cmd_put(uint8_t const *const cmd, uint8_t *const raw_event_out
 			(sdc_hci_cmd_vs_iso_read_tx_timestamp_t const *)cmd_params,
 			(sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t *)event_out_params);
 #endif /* CONFIG_BT_CTLR_ISO_TX_BUFFERS */
+#if defined(CONFIG_BT_CENTRAL)
+	case SDC_HCI_OPCODE_CMD_VS_SET_SCAN_CHANNEL_MAP:
+		return sdc_hci_cmd_vs_set_scan_channel_map(
+			(sdc_hci_cmd_vs_set_scan_channel_map_t const *)cmd_params);
+#endif
 	default:
 		return BT_HCI_ERR_UNKNOWN_CMD;
 	}
